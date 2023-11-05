@@ -2,6 +2,11 @@ BODY {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#main {
+  width: 800px;
+  /* margin: 0 auto; */
+}
+
 #gameContainer {
   width: 800px;
   height: 600px;
@@ -9,7 +14,6 @@ BODY {
   background: #ADD8E6;
   position: relative;
   overflow: hidden;
-  /* background-image: url(./background.png); */
   --background-scrolling: infinite;
 }
 #gameContainer::before {
@@ -32,6 +36,7 @@ BODY {
 }
 
 #bird {
+  --bird-animation: infinite;
   animation-name: birdFlapping;
   animation-duration: 0.5s;
   animation-iteration-count: var( --bird-animation );
@@ -44,7 +49,6 @@ BODY {
   -o-transform: scale(-1, 1);
   -ms-transform: scale(-1, 1);
   transform: scale(-1, 1);
-  --bird-animation: infinite;
 }
 @keyframes birdFlapping {
   from {transform: scale(-1, 1) translateX( -5px ); font-size: 30px;}
@@ -58,19 +62,18 @@ BODY {
   left: 50px;
   font-size: 45px;
   text-align: center;
-  
+
+  --spark-animation: 0;
   animation-name: sparking;
   animation-duration: 0.25s;
   animation-iteration-count: var( --spark-animation );
-  --spark-animation: 0;
 }
 @keyframes sparking {
   from { rotate: 45deg; font-size: 30px; display: block; }
   to { rotate: 0; font-size: 45px; display: none; }
 }
 
-#pipeContainer div {
-  height: 100px;
+#pipesContainer div {
   width: 60px;
   background: orange;
   position: absolute;

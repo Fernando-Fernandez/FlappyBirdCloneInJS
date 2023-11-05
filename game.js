@@ -1,13 +1,22 @@
 const bird = document.getElementById( 'bird' );
 const sparks = document.getElementById( 'sparks' );
 const gameContainer = document.getElementById( 'gameContainer' );
-const pipesContainer = document.getElementById( 'pipeContainer' );
+const pipesContainer = document.getElementById( 'pipesContainer' );
 const restartButton = document.getElementById( 'restartButton' );
 const healthDisplay = document.getElementById( 'health' );
 const scoreDisplay = document.getElementById( 'score' );
-const gameHeight = gameContainer.getBoundingClientRect().height;
+const containerRect = gameContainer.getBoundingClientRect();
+const gameHeight = containerRect.height;
+// for debug only
 const gravityOn = true;
 const collisionOn = true;
+// increase = more difficult
+const maxDistanceToClimb = 100;
+const maxDistanceToDescend = 60;
+// decrease = more difficult
+const maxGap = 180;
+const frequencyNewPipe = 1500;
+
 let pipes = [];
 let birdTop = 100;
 let birdAcceleration = 0;
@@ -16,12 +25,10 @@ let birdHealth = 100;
 let score = 0;
 let pipeInterval;
 let frameIndex = 0;
-let pipeLeft = 780;
+let pipeLeft = containerRect.width - 20;
 let pipeSpeed = 20;
 let previousBottomPipeHeight;
 let previousTopPipeHeight;
-
-// bird can be either 🚁 🦅
 
 function startGame() {
   score = 0;
@@ -34,15 +41,15 @@ function startGame() {
 
   pipeInterval = setInterval( function() {
     createNewPipes();
-  }, 1500 );
+  }, frequencyNewPipe );
 }
 
 function createNewPipes() {
   // TODO:  create pipes all at once instead of periodically
 
   let pipeHeight = 50 + Math.random() * 425;
-  let gap = Math.random() * ( gameHeight - pipeHeight - 200 );
-  gap = Math.max( 200, gap );
+  let gap = Math.random() * ( gameHeight - pipeHeight - maxGap );
+  gap = Math.max( maxGap, gap );
 
   const newPipeTop = document.createElement( 'div' );
   newPipeTop.style.left = pipeLeft + 'px';
@@ -50,8 +57,8 @@ function createNewPipes() {
   newPipeTop.style.top = '0px';
 
   // avoid distances too large for the bird to descend
-  if( pipeHeight > 60 + previousTopPipeHeight ) {
-    pipeHeight = previousTopPipeHeight + 60;
+  if( pipeHeight > maxDistanceToDescend + previousTopPipeHeight ) {
+    pipeHeight = previousTopPipeHeight + maxDistanceToDescend;
   }
 
   newPipeTop.style.height = pipeHeight + 'px';
@@ -64,8 +71,8 @@ function createNewPipes() {
   let bottomPipeHeight = Math.max( 10, gameHeight - gap - pipeHeight );
 
   // avoid distances too large for the bird to climb
-  if( bottomPipeHeight > 100 + previousBottomPipeHeight ) {
-    bottomPipeHeight = previousBottomPipeHeight + 100;
+  if( bottomPipeHeight > maxDistanceToClimb + previousBottomPipeHeight ) {
+    bottomPipeHeight = previousBottomPipeHeight + maxDistanceToClimb;
   }
 
   newPipeBottom.style.height = bottomPipeHeight + 'px';
