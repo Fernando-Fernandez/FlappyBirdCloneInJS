@@ -1,3 +1,4 @@
+const GAME_NAME = 'FlappyBirdCloneInJS';
 const bird = document.getElementById( 'bird' );
 const sparks = document.getElementById( 'sparks' );
 const gameContainer = document.getElementById( 'gameContainer' );
@@ -5,6 +6,7 @@ const pipesContainer = document.getElementById( 'pipesContainer' );
 const restartButton = document.getElementById( 'restartButton' );
 const healthDisplay = document.getElementById( 'health' );
 const scoreDisplay = document.getElementById( 'score' );
+const highestScoreDisplay = document.getElementById( 'highest' );
 const containerRect = gameContainer.getBoundingClientRect();
 const gameHeight = containerRect.height;
 // for debug only
@@ -23,6 +25,7 @@ let birdAcceleration = 0;
 let birdFallSpeed = 0.0625;
 let birdHealth = 100;
 let score = 0;
+let highestScore = sessionStorage.getItem( GAME_NAME );
 let pipeInterval;
 let frameIndex = 0;
 let pipeLeft = containerRect.width - 20;
@@ -190,15 +193,26 @@ function gameLoop( timeStamp ) {
 }
 
 function gameOver() {
+  // reset game
   clearInterval( pipeInterval );
   bird.style.setProperty( '--bird-animation', 0 );
   gameContainer.style.setProperty('--background-scrolling', 0 );
 
+  // handle scores
+  scoreDisplay.innerText = score;
+  if( score > highestScore ) {
+    highestScore = score;
+    sessionStorage.setItem( GAME_NAME, highestScore );
+  }
+  highestScoreDisplay.innerText = highestScore;
+
+  // allow reloading the game
   restartButton.style.display = 'block';
   restartButton.addEventListener( 'click', function () {
     location.reload();
   } );
 }
 
+highestScoreDisplay.innerText = highestScore;
 startGame();
 requestAnimationFrame( gameLoop );
